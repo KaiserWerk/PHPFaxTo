@@ -5,7 +5,7 @@
  *
  */
 
-namespace KaiserWerk\FaxTo;
+#namespace KaiserWerk\FaxTo;
 
 class FaxTo
 {
