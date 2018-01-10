@@ -1,13 +1,24 @@
 <?php
-ini_set('display_errors', 1);
+/**
+ * Author: Robin Kaiser
+ * E-Mail: m@r-k.mx
+ *
+ */
 
-class Fax
+namespace KaiserWerk\FaxTo;
+
+class FaxTo
 {
+
+    /**
+     * The fixed endpoint we will be sending requests to
+     * @var mixed|string
+     */
     protected $endpoint = 'https://fax.to/api/v1/%mode%?api_key=%apikey%';
 
     /**
      * Fax constructor.
-     * @param $apikey
+     * @param string $apikey
      */
     public function __construct($apikey)
     {
@@ -34,11 +45,12 @@ class Fax
     }
 
     /**
-     * Gets the cost for sending a fax to the specified $fax_number with the specified $ocument_id.
+     * Gets the cost for sending a fax to the specified $fax_number with
+     * the specified $ocument_id of an already uploaded file.
      *
      * @param $fax_number
-     * @param $document_id
-     * @return array
+     * @param int $document_id
+     * @return array|float
      */
     public function getFaxCost($fax_number, $document_id)
     {
@@ -51,7 +63,9 @@ class Fax
         $params = array(
             'fax_number' => $fax_number,
         );
-        $response = file_get_contents(str_replace('%mode%', 'fax/' . $document_id . '/costs', $this->endpoint) . '&' . http_build_query($params));
+        $response = file_get_contents(
+            str_replace('%mode%', 'fax/' . $document_id . '/costs', $this->endpoint) .
+            '&' . http_build_query($params));
         $json = json_decode($response, true);
         if ($json['status'] === 'success') {
             return $json['balance'];
@@ -62,7 +76,7 @@ class Fax
     /**
      * Gets the status for the job_id of a fax.
      *
-     * @param $job_id
+     * @param int $job_id
      * @return array
      */
     public function getFaxStatus($job_id)
@@ -141,7 +155,7 @@ class Fax
             $document_id = null;
 
             $mime = mime_content_type($file);
-            $cfile = new CURLFile(realpath($file),$mime, $file);
+            $cfile = new \CURLFile(realpath($file),$mime, $file);
 
             unset($postfields['document_id']);
             $postfields['file'] = $cfile;
@@ -221,7 +235,7 @@ class Fax
             return array('status' => 'file not readable');
         }
         $mime = mime_content_type($file);
-        $cfile = new CURLFile(realpath($file), $mime, $file);
+        $cfile = new \CURLFile(realpath($file), $mime, $file);
 
         $curl = curl_init();
 
