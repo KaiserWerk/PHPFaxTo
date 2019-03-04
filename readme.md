@@ -5,7 +5,7 @@ How to use
 
 #### Set up
 ```
-$fax = new Fax('<your api code here>');
+$fax = new FaxTo('<your api code here>');
 ```
 
 
